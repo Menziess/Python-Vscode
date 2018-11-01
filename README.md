@@ -55,7 +55,7 @@ Push container
 
 ## 2.2 Scale Service (Multiple Containers - Single Node)
 
-Verify that the docker-compose.yml file exists
+Verify that the `docker-compose.yml` file exists
 
     $ ls
     Dockerfile		app.py			requirements.txt      docker-compose.yml
@@ -108,8 +108,13 @@ Finally, we can leave the swarm from within each VM, remove the stack
     docker-machine stop myvm1
     docker-machine stop myvm2
 
-## 2.4 Stack services by adding a backend database
+## 2.4 Stack Services (Adding Database)
 
+We will expand our `docker-compose.yml` file by adding more services. We will add a docker visualizer and a redis database. The database will require a volume that is stored on the swarm manager called `/data`, let's make that folder and redeploy
 
+    docker-machine ssh myvm1 "mkdir ./data"
+    docker stack deploy -c docker-compose.yml getstartedlab
 
-## 2.5 Deploy your app to production
+Our application should now display the number of visits.
+
+## 2.5 Deploy
