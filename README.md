@@ -116,3 +116,10 @@ We will expand our `docker-compose.yml` file by adding more services. We will ad
     docker stack deploy -c docker-compose.yml getstartedlab
 
 Our application should now display the number of visits.
+
+## 3. Development
+
+A container can be run with a shared volume, so that code changes are immediately visible, and the container is deleted after use
+
+    docker run -p 80:80 --rm -v "$PWD:/app" menziess/python-vscode
+
