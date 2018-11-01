@@ -116,5 +116,3 @@ We will expand our `docker-compose.yml` file by adding more services. We will ad
     docker stack deploy -c docker-compose.yml getstartedlab
 
 Our application should now display the number of visits.
-
-## 2.5 Deploy
