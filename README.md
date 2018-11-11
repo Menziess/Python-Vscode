@@ -2,9 +2,33 @@
 
 ## 1. Introduction
 
-This repository is a condensed walkthrough of the official Docker [Getting Started Guide](https://docs.docker.com/get-started/), using python in vscode, with the docker and python extensions.
+This repository is a condensed walkthrough of the official Docker [Getting Started Guide](https://docs.docker.com/get-started/), using python in vscode, with docker and python extensions, a setup.py file, and some good practices.
 
-## 2. Docker
+## 2. Develop
+
+### 2.1 Using Docker
+
+A container can be run with a shared volume, so that code changes are immediately visible, and the container is deleted after use. Create a docker image with debug enabled by setting the `ENV FLASK_DEBUG` flag to `1`, then run:
+
+    docker run -p 80:80 --rm menziess/python-vscode
+
+### 2.2 Using Virtual Environment
+
+Clone this repository and create a virtual environment with a tool such as 'virtualenv' in the root folder, and run:
+
+    source ./development.sh
+
+This will activate the virtual environment and install dev dependencies and command-line tools.
+
+Run the flask app:
+
+    flask run
+
+Run tests manually:
+
+    python -m pytest test/
+
+## 3. Run and Deploy
 
 Develop, deploy, and run applications with containers.
 
@@ -16,7 +40,7 @@ Develop, deploy, and run applications with containers.
 
 For example: an application, or a stack, may contain a database service, and a web-app service, described by their respective images, each having three containers (6 in total), running distributed on a swarm.
 
-## 2.1 Build Image
+## 3.1 Build Image
 
 Verify that the Dockerfile exists
 
@@ -36,7 +60,7 @@ Show the image that has been built
 
 Run the app in detached mode
 
-    docker run -p 4000:80 menziess/python-vscode
+    docker run -p 80:80 menziess/python-vscode
 
 Show the running containers
 
@@ -53,7 +77,7 @@ Push container
     docker login
     docker push menziess/python-vscode
 
-## 2.2 Scale Service (Multiple Containers - Single Node)
+## 3.2 Scale Service (Multiple Containers - Single Node)
 
 Verify that the `docker-compose.yml` file exists
 
@@ -77,14 +101,14 @@ We take down the app, and leave the swarm
     docker stack rm getstartedlab
     docker swarm leave --force
 
-## 2.3 Distributed Swarm (Containers Across Cluster - Multiple Nodes)
+## 3.3 Distributed Swarm (Containers Across Cluster - Multiple Nodes)
 
 Start two VM's using virtualbox and docker-machine
 
     docker-machine create --driver virtualbox myvm1
     docker-machine create --driver virtualbox myvm2
 
-Initialize the first VM as a swarm manager, as we did in 2.2
+Initialize the first VM as a swarm manager, as we did in 3.2
 
     docker-machine ls
     docker-machine ssh myvm1 "docker swarm init --advertise-addr <myvm1 ip>"
@@ -97,7 +121,7 @@ Show all the nodes in the swarm
 
     docker-machine ssh myvm1 "docker node ls"
 
-Now you can walk through 2.2 again, and deploy the stack, but on the distributed swarm this time. If you do this, run `docker-machine ls` to reveal the VM ip addresses to access the application in the browser.
+Now you can walk through 3.2 again, and deploy the stack, but on the distributed swarm this time. If you do this, run `docker-machine ls` to reveal the VM ip addresses to access the application in the browser.
 
 Finally, we can leave the swarm from within each VM, remove the stack
 
@@ -108,7 +132,7 @@ Finally, we can leave the swarm from within each VM, remove the stack
     docker-machine stop myvm1
     docker-machine stop myvm2
 
-## 2.4 Stack Services (Adding Database)
+## 3.4 Stack Services (Adding Database)
 
 We will expand our `docker-compose.yml` file by adding more services. We will add a docker visualizer and a redis database. The database will require a volume that is stored on the swarm manager called `/data`, let's make that folder and redeploy
 
@@ -116,10 +140,3 @@ We will expand our `docker-compose.yml` file by adding more services. We will ad
     docker stack deploy -c docker-compose.yml getstartedlab
 
 Our application should now display the number of visits.
-
-## 3. Development
-
-A container can be run with a shared volume, so that code changes are immediately visible, and the container is deleted after use
-
-    docker run -p 80:80 --rm -v "$PWD:/app" menziess/python-vscode
-
