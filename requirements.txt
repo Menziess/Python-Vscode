@@ -2,3 +2,4 @@ Flask
 Redis
 Pylint
 Pytest
+Yapf
